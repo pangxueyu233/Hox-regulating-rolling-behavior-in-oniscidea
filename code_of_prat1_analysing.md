@@ -2,7 +2,7 @@
 
 ## 1. Trinity denovo assemble genome
 
-~~~R
+~~~shell
 #merge straight
 vim roly_poly_strait.txt
 
@@ -35,7 +35,7 @@ Trinity --seqType fq --max_memory 50G  \
 
 ## 2. Summary and re-alignment
 
-~~~R
+~~~shell
 /home/zhaolei/miniconda3/envs/trinity/bin/TrinityStats.pl /mnt/data/userdata/zhaolei/project/denovo_roly/trinity_strait_all_merge/Trinity.fasta > Trinitystats.log
 
 /home/zhaolei/miniconda3/envs/trinity/bin/TrinityStats.pl /mnt/data/userdata/zhaolei/project/denovo_roly/trinity_curl_all_merge/Trinity.fasta > Trinitystats.log
@@ -64,7 +64,7 @@ bowtie2 -p 20 -x /mnt/data/userdata/zhaolei/project/denovo_roly/trinity_curl_all
 
 ## 3. Homology quantification between species
 
-~~~R
+~~~shell
 nucmer --prefix Drosophila_strait \
 /mnt/data/userdata/zhaolei/program/refer/Drosophila/Drosophila_melanogaster/UCSC/dm6/Sequence/WholeGenomeFasta/genome.fa \
 /mnt/data/userdata/zhaolei/project/denovo_roly/trinity_strait_all_merge/Trinity.fasta
