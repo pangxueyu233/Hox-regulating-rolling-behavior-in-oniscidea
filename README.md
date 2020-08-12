@@ -16,12 +16,29 @@ The majority of our data in this paper was RNA-seq data. And we submitted all th
 
 ## 1. ```code_of_prat1_analysing```
 
-This Rmarkdown file recoded processed steps in de novo whole transcripts reconstruction and homogeneity of variance quantification. And it could be found by [clicking here]()
+This Rmarkdown file recoded processed steps in de novo whole transcripts reconstruction and homogeneity of variance quantification. And it could be found by [clicking here](code_of_prat1_analysing.md)
 
 ## 2. ```code_of_part2_analysing``` 
 
-This Rmarkdown file recoded ```figures making```processed steps with ***Code and Graph***. And it could be found by [clicking here](). All the processed files could be downloaded in ```processed_files``` 
+This Rmarkdown file recoded ```figures making```processed steps with ***Code and Graph***. And it could be found by [clicking here](code_of_part2_analysing.md). All the processed files could be downloaded in ```processed_files``` 
 
 ## 3. ```processed_files``` 
 
 All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
