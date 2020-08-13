@@ -44,6 +44,36 @@ library(scales)
 library(BuenColors)			
 ```
 
+## Figure1 making
+
+~~~R
+AA <- data.frame(type=c("Roll1", "Roll2", "Roll3", "Roll4", "Roll5", "Straight1", "Straight2", "Straight3", "Straight4", "Straight5"),
+  length=c(0.9, 1.1, 0.7, 0.6, 0.5, 0.8, 0.8, 0.8, 0.6, 0.6),
+  new_name=c("Roll", "Roll", "Roll", "Roll", "Roll", "Straight", "Straight", "Straight", "Straight", "Straight"))
+data_summary <- function(data, varname, groupnames){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+ data_sum <- rename(data_sum, c("mean" = varname))
+ return(data_sum)
+}
+
+df3 <- data_summary(AA, varname="length", 
+                    groupnames=c("new_name"))
+df3$new_name=as.factor(df3$new_name)
+p <- ggplot(df3,aes(x=new_name, y=length, fill=new_name))
+p <- p + geom_bar(stat="identity", position=position_dodge())
+p <- p + geom_errorbar(aes(ymin=length-sd, ymax=length+sd), width=.2,
+                 position=position_dodge(.9))
+p
+~~~
+
+![image-20200813180410925](code_of_part2_analysing.assets/image-20200813180410925.png)
+
 ## Figure2 making
 
 ```R

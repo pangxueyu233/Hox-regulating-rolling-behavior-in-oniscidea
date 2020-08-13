@@ -6,9 +6,9 @@
 #merge straight
 vim roly_poly_strait.txt
 
-strait strait1 strait-1_FRAS192303306-1r_1.clean.fq.gz strait-1_FRAS192303306-1r_2.clean.fq.gz
-strait strait2 strait-2_FRAS192303307-1r_1.clean.fq.gz strait-2_FRAS192303307-1r_2.clean.fq.gz
-strait strait4 strait-3_FRAS192303308-1r_1.clean.fq.gz strait-3_FRAS192303308-1r_2.clean.fq.gz
+Stretching Stretching1 Stretching-1_FRAS192303306-1r_1.clean.fq.gz Stretching-1_FRAS192303306-1r_2.clean.fq.gz
+Stretching Stretching2 Stretching-2_FRAS192303307-1r_1.clean.fq.gz Stretching-2_FRAS192303307-1r_2.clean.fq.gz
+Stretching Stretching4 Stretching-3_FRAS192303308-1r_1.clean.fq.gz Stretching-3_FRAS192303308-1r_2.clean.fq.gz
 
 Trinity --seqType fq --max_memory 50G  \
         --left strait-1_FRAS192303306-1r_1.clean.fq.gz,strait-2_FRAS192303307-1r_1.clean.fq.gz,strait-3_FRAS192303308-1r_1.clean.fq.gz \
@@ -20,9 +20,9 @@ Trinity --seqType fq --max_memory 50G  \
 #merge curly
 vim roly_poly_curl.txt
 
-curl curl_1 curl-1_FRAS192303309-1b_1.clean.fq.gz curl-1_FRAS192303309-1b_2.clean.fq.gz
-curl curl_3 curl-2_FRAS192303310-1r_1.clean.fq.gz curl-2_FRAS192303310-1r_2.clean.fq.gz
-curl curl_4 curl-3_FRAS192303311-1r_1.clean.fq.gz curl-3_FRAS192303311-1r_2.clean.fq.gz
+Rolling Rolling_1 Rolling-1_FRAS192303309-1b_1.clean.fq.gz Rolling-1_FRAS192303309-1b_2.clean.fq.gz
+Rolling Rolling_3 Rolling-2_FRAS192303310-1r_1.clean.fq.gz Rolling-2_FRAS192303310-1r_2.clean.fq.gz
+Rolling Rolling_4 Rolling-3_FRAS192303311-1r_1.clean.fq.gz Rolling-3_FRAS192303311-1r_2.clean.fq.gz
 
 Trinity --seqType fq --max_memory 50G  \
         --left curl-1_FRAS192303309-1b_1.clean.fq.gz,curl-2_FRAS192303310-1r_1.clean.fq.gz,curl-3_FRAS192303311-1r_1.clean.fq.gz \
