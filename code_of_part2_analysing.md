@@ -410,6 +410,224 @@ ggsave("/mnt/data/user_data/xiangyu/workshop/roly_poly/figure_making/Hoxd11_tree
 
 ## Figure5 making
 
+~~~R
+promer_hg19_hox_similarity_curl <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_hg19_hox_similarity_curl_anno.coord.rds")
+promer_hg19_hox_similarity_strait <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_hg19_hox_similarity_strait_anno.coord.rds")
+promer_mm10_hox_similarity_curl <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_mm10_hox_similarity_curl_anno.coord.rds")
+promer_mm10_hox_similarity_strait <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_mm10_hox_similarity_strait_anno.coord.rds")
+promer_dm6_hox_similarity_curl <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_dm6_hox_similarity_curl_anno.coord.rds")
+promer_dm6_hox_similarity_strait <- readRDS("/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/promer_dm6_hox_similarity_strait_anno.coord.rds")
+promer_hg19_hox_similarity_strait$SIM <- as.numeric(as.character(promer_hg19_hox_similarity_strait$SIM))
+promer_hg19_hox_similarity_curl$SIM <- as.numeric(as.character(promer_hg19_hox_similarity_curl$SIM))
+promer_mm10_hox_similarity_strait$SIM <- as.numeric(as.character(promer_mm10_hox_similarity_strait$SIM))
+promer_mm10_hox_similarity_curl$SIM <- as.numeric(as.character(promer_mm10_hox_similarity_curl$SIM))
+promer_dm6_hox_similarity_strait$SIM <- as.numeric(as.character(promer_dm6_hox_similarity_strait$SIM))
+promer_dm6_hox_similarity_curl$SIM <- as.numeric(as.character(promer_dm6_hox_similarity_curl$SIM))
+promer_hg19_hox_similarity_strait <- subset(promer_hg19_hox_similarity_strait,SIM>80)
+promer_hg19_hox_similarity_curl <- subset(promer_hg19_hox_similarity_curl,SIM>80)
+promer_mm10_hox_similarity_strait <- subset(promer_mm10_hox_similarity_strait,SIM>80)
+promer_mm10_hox_similarity_curl <- subset(promer_mm10_hox_similarity_curl,SIM>80)
+promer_dm6_hox_similarity_strait <- subset(promer_dm6_hox_similarity_strait,SIM>80)
+promer_dm6_hox_similarity_curl <- subset(promer_dm6_hox_similarity_curl,SIM>80)
+promer_hg19_hox_similarity_strait$type <- "hg19_strait"
+promer_hg19_hox_similarity_curl$type <- "hg19_curl"
+promer_mm10_hox_similarity_strait$type <- "mm10_strait"
+promer_mm10_hox_similarity_curl$type <- "mm10_curl"
+promer_dm6_hox_similarity_strait$type <- "dm6_strait"
+promer_dm6_hox_similarity_curl$type <- "dm6_curl"
+all_info_data <- do.call(rbind,list(promer_hg19_hox_similarity_strait,promer_hg19_hox_similarity_curl,promer_mm10_hox_similarity_strait,promer_mm10_hox_similarity_curl,promer_dm6_hox_similarity_strait,promer_dm6_hox_similarity_curl))
+all_info_data$type <- as.character(all_info_data$type)
+all_info_data$ref_gene <- as.character(all_info_data$ref_gene)
+summ_hox <- as.data.frame(table(all_info_data$type,all_info_data$ref_gene))
+summ_hox$Var1 <- as.character(summ_hox$Var1)
+summ_hox <- future_lapply(1:length(unique(summ_hox$Var1)),function(x){
+  sel <- unique(summ_hox$Var1)[x]
+  tmp <- subset(summ_hox,Var1==sel)
+  tmp$Freq <- sum(tmp$Freq)
+  return(tmp[1,])
+  })
+summ_hox <- do.call(rbind,summ_hox)
+library(ggpubr)
+p1 <- ggplot(summ_hox, aes(x=Var1, y=Freq, fill=Var1))+
+geom_bar(width = 1, stat = "identity") +
+geom_text(label=summ_hox$Freq ,colour = "black", vjust=-0.5)+
+theme_classic()+ rotate_x_text(angle = 45)
+promer_hg19_hox_similarity_strait$ref_gene <- as.character(promer_hg19_hox_similarity_strait$ref_gene)
+promer_hg19_hox_similarity_curl$ref_gene <- as.character(promer_hg19_hox_similarity_curl$ref_gene)
+promer_mm10_hox_similarity_strait$ref_gene <- as.character(promer_mm10_hox_similarity_strait$ref_gene)
+promer_mm10_hox_similarity_curl$ref_gene <- as.character(promer_mm10_hox_similarity_curl$ref_gene)
+promer_dm6_hox_similarity_strait$ref_gene <- as.character(promer_dm6_hox_similarity_strait$ref_gene)
+promer_dm6_hox_similarity_curl$ref_gene <- as.character(promer_dm6_hox_similarity_curl$ref_gene)
+similar_geness <- data.frame(num_Genes=c(length(unique(promer_hg19_hox_similarity_strait$ref_gene)),
+  length(unique(promer_hg19_hox_similarity_curl$ref_gene)),
+  length(unique(promer_mm10_hox_similarity_strait$ref_gene)),
+  length(unique(promer_mm10_hox_similarity_curl$ref_gene)),
+  length(unique(promer_dm6_hox_similarity_strait$ref_gene)),
+  length(unique(promer_dm6_hox_similarity_curl$ref_gene))),
+  type=c("hg19_strait","hg19_curl","mm10_strait","mm10_curl","dm6_strait","dm6_curl")
+  )
+p2 <- ggplot(similar_geness, aes(x=type, y=num_Genes, fill=type))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=similar_geness$num_Genes ,colour = "black", vjust=-0.5)+
+  theme_classic()+ rotate_x_text(angle = 45)
+aa <- plot_grid(p1,p2,nrow=1)
+aa
+~~~
+
+![image-20200830144859822](code_of_part2_analysing.assets/image-20200830144859822.png)
+
+~~~R
+
+all_info_data$type <- as.character(all_info_data$type)
+all_info_data$ref_gene <- as.character(all_info_data$ref_gene)
+summ_hox <- as.data.frame(table(all_info_data$type,all_info_data$ref_gene))
+summ_hox$Var1 <- as.character(summ_hox$Var1)
+summ_hox$Var2 <- as.character(summ_hox$Var2)
+summ_hox <- subset(summ_hox,Var2!="PHOX2B")
+summ_hox <- subset(summ_hox,Var2!="SHOX2")
+summ_hox$Var2 <- gsub("HOXB","Hoxb",summ_hox$Var2)
+summ_hox$Var2 <- gsub("HOXC","Hoxc",summ_hox$Var2)
+summ_hox$Var2 <- gsub("HOXA","Hoxa",summ_hox$Var2)
+summ_hox$Var2 <- gsub("HOXD","Hoxd",summ_hox$Var2)
+unique(summ_hox$Var2)
+summ_hox <- future_lapply(1:length(unique(summ_hox$Var2)),function(x){
+  sel <- unique(summ_hox$Var2)[x]
+  tmp <- subset(summ_hox,Var2==sel)
+  tmp_hox <- future_lapply(1:length(unique(tmp$Var1)),function(i){
+    sel <- unique(tmp$Var1)[i]
+    tmp <- subset(tmp,Var1==sel)
+    tmp$Freq <- sum(tmp$Freq)
+    return(tmp[1,])
+    })
+  tmp_hox <- do.call(rbind,tmp_hox)
+  tmp_hox$sum_detect <- sum(tmp_hox$Freq)
+  return(tmp_hox)
+  })
+summ_hox <- do.call(rbind,summ_hox)
+summ_hox <- subset(summ_hox,sum_detect>5)
+unique(summ_hox$Var2)
+
+p1 <- ggplot(subset(summ_hox,Var2=="Hoxa11"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxa11")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxa11")+
+  coord_flip() + theme(legend.position = "none")
+p2 <- ggplot(subset(summ_hox,Var2=="Hoxa3"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxa3")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxa3")+
+  coord_flip() + theme(legend.position = "none")
+p3 <- ggplot(subset(summ_hox,Var2=="Hoxb3"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxb3")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxb3")+
+  coord_flip() + theme(legend.position = "none")
+p4 <- ggplot(subset(summ_hox,Var2=="Hoxb4"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxb4")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxb4")+
+  coord_flip() + theme(legend.position = "none")
+p5 <- ggplot(subset(summ_hox,Var2=="Hoxb5os"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxb5os")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxb5os")+
+  coord_flip() + theme(legend.position = "none")
+p6 <- ggplot(subset(summ_hox,Var2=="Hoxb7"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxb7")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxb7")+
+  coord_flip() + theme(legend.position = "none")
+p7 <- ggplot(subset(summ_hox,Var2=="Hoxc10"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxc10")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxc10")+
+  coord_flip() + theme(legend.position = "none")
+p8 <- ggplot(subset(summ_hox,Var2=="Hoxc13"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxc13")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxc13")+
+  coord_flip() + theme(legend.position = "none")
+p9 <- ggplot(subset(summ_hox,Var2=="Hoxc4"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxc4")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxc4")+
+  coord_flip() + theme(legend.position = "none")
+p10 <- ggplot(subset(summ_hox,Var2=="Hoxc9"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxc9")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxc9")+
+  coord_flip() + theme(legend.position = "none")
+p11 <- ggplot(subset(summ_hox,Var2=="Hoxd10"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxd10")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxd10")+
+  coord_flip() + theme(legend.position = "none")
+p12 <- ggplot(subset(summ_hox,Var2=="Hoxd11"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxd11")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxd11")+
+  coord_flip() + theme(legend.position = "none")
+p13 <- ggplot(subset(summ_hox,Var2=="Hoxd3"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxd3")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxd3")+
+  coord_flip() + theme(legend.position = "none")
+p14 <- ggplot(subset(summ_hox,Var2=="Hoxd3os1"), aes(x=Var1, y=Freq, fill=Var1))+
+  geom_bar(width = 1, stat = "identity") +
+  geom_text(label=subset(summ_hox,Var2=="Hoxd3os1")$Freq ,colour = "black", vjust=-0.5,hjust=1)+
+  theme_classic()+ rotate_x_text(angle = 45) + labs(title="Hoxd3os1")+
+  coord_flip() + theme(legend.position = "none")
+aa <- plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,nrow=2,ncol=7)
+~~~
+
+![image-20200830145016732](code_of_part2_analysing.assets/image-20200830145016732.png)
+
+~~~R
+
+library(ggplot2)
+library(ggmsa)
+library(Biostrings)
+f <- "/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/all_merge_Hoxc9_AA.fa"
+library(Biostrings)
+x <- readAAStringSet(f)
+d <- as.dist(stringDist(x, method = "hamming")/width(x)[1])
+library(ape)
+tree <- bionj(d)
+library(ggtree)
+p <- ggtree(tree, branch.length='none') + geom_tiplab()
+data <- tidy_msa(x)
+p <- p + geom_facet(geom = geom_msa, data = data,  panel = 'msa',
+               font = NULL, color = "Chemistry_AA") +
+    xlim_tree(1) + labs(title="Hoxc9")
+~~~
+
+<img src="code_of_part2_analysing.assets/image-20200830145041883.png" alt="image-20200830145041883" style="zoom:50%;" />
+
+~~~R
+
+library(ggplot2)
+library(ggmsa)
+library(Biostrings)
+f <- "/mnt/data/user_data/xiangyu/workshop/roly_poly/AA_SIM/sub_fa/all_merge_Hoxc10_AA.fa"
+library(Biostrings)
+x <- readAAStringSet(f)
+d <- as.dist(stringDist(x, method = "hamming")/width(x)[1])
+library(ape)
+tree <- bionj(d)
+library(ggtree)
+p <- ggtree(tree, branch.length='none') + geom_tiplab()
+data <- tidy_msa(x)
+p <- p + geom_facet(geom = geom_msa, data = data,  panel = 'msa',
+               font = NULL, color = "Chemistry_AA") +
+    xlim_tree(1) + labs(title="Hoxc10")
+~~~
+
+<img src="code_of_part2_analysing.assets/image-20200830145115984.png" alt="image-20200830145115984" style="zoom:50%;" />
+
+
+
+## Figure6 making
+
 ```R
 
 counts_res_1 <- read.csv(file = "/mnt/data/user_data/xiangyu/workshop/roly_poly/bwa_files/mm10/All_data_normalised_and_res.csv")
@@ -476,6 +694,8 @@ ggsave("/mnt/data/user_data/xiangyu/workshop/roly_poly/figure_making/hoxc9_tree.
 
 ![image-20200810110211885](code_of_analysing.assets/image-20200810110211885.png)
 
+
+
 ## sessionInfo
 
 ```R
@@ -500,42 +720,41 @@ locale:
 [11] LC_MEASUREMENT=zh_CN.UTF-8 LC_IDENTIFICATION=C
 
 attached base packages:
- [1] grid      splines   stats4    parallel  stats     graphics  grDevices
- [8] utils     datasets  methods   base
+ [1] splines   stats4    parallel  stats     graphics  grDevices utils
+ [8] datasets  methods   base
 
 other attached packages:
- [1] ggtree_2.0.2                phangorn_2.6.0
- [3] ape_5.3                     ggmsa_0.0.4
- [5] ComplexHeatmap_2.2.0        gdtools_0.2.2
- [7] ggpubr_0.2.5                magrittr_1.5
- [9] BuenColors_0.5.5            MASS_7.3-51.5
-[11] scales_1.1.0                future.apply_1.5.0
-[13] future_1.17.0               tidyr_1.0.2
-[15] nichenetr_0.1.0             iTALK_0.1.0
-[17] stringr_1.4.0               data.table_1.12.8
-[19] DESeq2_1.26.0               org.Mm.eg.db_3.10.0
-[21] PoiClaClu_1.0.2.1           RColorBrewer_1.1-2
-[23] pheatmap_1.0.12             GenomicAlignments_1.22.1
-[25] SummarizedExperiment_1.16.1 DelayedArray_0.12.2
-[27] BiocParallel_1.20.1         matrixStats_0.56.0
-[29] GenomicFeatures_1.38.2      Rsamtools_2.2.3
-[31] Biostrings_2.54.0           XVector_0.26.0
-[33] GenomicRanges_1.38.0        GenomeInfoDb_1.22.1
-[35] trqwe_0.1                   velocyto.R_0.6
-[37] cowplot_1.0.0               pathview_1.26.0
-[39] org.Hs.eg.db_3.10.0         topGO_2.38.1
-[41] SparseM_1.78                GO.db_3.10.0
-[43] AnnotationDbi_1.48.0        IRanges_2.20.2
-[45] S4Vectors_0.24.3            graph_1.64.0
-[47] clusterProfiler_3.14.3      DOSE_3.12.0
-[49] plyr_1.8.6                  monocle_2.14.0
-[51] DDRTree_0.1.5               VGAM_1.1-2
-[53] ggplot2_3.2.1               Biobase_2.46.0
-[55] BiocGenerics_0.32.0         irlba_2.3.3
-[57] densityClust_0.3            Rtsne_0.15
-[59] gplots_3.0.3                proxy_0.4-23
-[61] Matrix_1.2-18               Seurat_3.1.5
-[63] dplyr_0.8.5
+ [1] ggtree_2.0.2                ape_5.3
+ [3] ggmsa_0.0.4                 gdtools_0.2.2
+ [5] ggpubr_0.2.5                magrittr_1.5
+ [7] BuenColors_0.5.5            MASS_7.3-51.5
+ [9] scales_1.1.0                future.apply_1.5.0
+[11] future_1.17.0               tidyr_1.0.2
+[13] nichenetr_0.1.0             iTALK_0.1.0
+[15] stringr_1.4.0               data.table_1.12.8
+[17] DESeq2_1.26.0               org.Mm.eg.db_3.10.0
+[19] PoiClaClu_1.0.2.1           RColorBrewer_1.1-2
+[21] pheatmap_1.0.12             GenomicAlignments_1.22.1
+[23] SummarizedExperiment_1.16.1 DelayedArray_0.12.2
+[25] BiocParallel_1.20.1         matrixStats_0.56.0
+[27] GenomicFeatures_1.38.2      Rsamtools_2.2.3
+[29] Biostrings_2.54.0           XVector_0.26.0
+[31] GenomicRanges_1.38.0        GenomeInfoDb_1.22.1
+[33] trqwe_0.1                   velocyto.R_0.6
+[35] cowplot_1.0.0               pathview_1.26.0
+[37] org.Hs.eg.db_3.10.0         topGO_2.38.1
+[39] SparseM_1.78                GO.db_3.10.0
+[41] AnnotationDbi_1.48.0        IRanges_2.20.2
+[43] S4Vectors_0.24.3            graph_1.64.0
+[45] clusterProfiler_3.14.3      DOSE_3.12.0
+[47] plyr_1.8.6                  monocle_2.14.0
+[49] DDRTree_0.1.5               VGAM_1.1-2
+[51] ggplot2_3.2.1               Biobase_2.46.0
+[53] BiocGenerics_0.32.0         irlba_2.3.3
+[55] densityClust_0.3            Rtsne_0.15
+[57] gplots_3.0.3                proxy_0.4-23
+[59] Matrix_1.2-18               Seurat_3.1.5
+[61] dplyr_0.8.5
 
 loaded via a namespace (and not attached):
   [1] minpack.lm_1.2-1
@@ -572,231 +791,228 @@ loaded via a namespace (and not attached):
  [32] KernSmooth_2.23-16
  [33] gdata_2.18.0
  [34] limma_3.42.2
- [35] seqmagick_0.1.3
- [36] Hmisc_4.4-0
- [37] ShortRead_1.44.3
- [38] RSpectra_0.16-0
- [39] fastmatch_1.1-0
- [40] ranger_0.12.1
- [41] digest_0.6.25
- [42] png_0.1-7
- [43] qlcMatrix_0.9.7
- [44] sctransform_0.2.1
- [45] ggraph_2.0.2
- [46] pkgconfig_2.0.3
- [47] docopt_0.6.1
- [48] gower_0.2.1
- [49] iterators_1.0.12
- [50] URD_1.1.0
- [51] reticulate_1.15
- [52] network_1.16.0
- [53] circlize_0.4.8
- [54] GetoptLong_0.1.8
- [55] modeltools_0.2-23
- [56] xfun_0.13
- [57] zoo_1.8-7
- [58] tidyselect_1.0.0
- [59] reshape2_1.4.4
- [60] purrr_0.3.4
- [61] ica_1.0-2
- [62] viridisLite_0.3.0
- [63] rtracklayer_1.46.0
- [64] rlang_0.4.5
- [65] hexbin_1.28.1
- [66] glue_1.4.0
- [67] ensembldb_2.10.2
- [68] ggseqlogo_0.1
- [69] lava_1.6.7
- [70] europepmc_0.3
- [71] ggsignif_0.6.0
- [72] recipes_0.1.10
- [73] labeling_0.3
- [74] chipseq_1.36.0
- [75] DEsingle_1.6.0
- [76] gggenes_0.4.0
- [77] class_7.3-15
- [78] preprocessCore_1.48.0
- [79] RMTstat_0.3
- [80] Sierra_0.2.0
- [81] DO.db_2.9
- [82] annotate_1.64.0
- [83] jsonlite_1.6.1
- [84] systemfonts_0.2.0
- [85] bit_1.1-15.2
- [86] gridExtra_2.3
- [87] gmodels_2.18.1
- [88] stringi_1.4.6
- [89] quadprog_1.5-8
- [90] bitops_1.0-6
- [91] RSQLite_2.2.0
- [92] randomForest_4.6-14
- [93] KEGGgraph_1.46.0
- [94] rstudioapi_0.11
- [95] nlme_3.1-147
- [96] qvalue_2.18.0
- [97] locfit_1.5-9.4
- [98] VariantAnnotation_1.32.0
- [99] listenv_0.8.0
-[100] ggthemes_4.2.0
-[101] gridGraphics_0.5-0
-[102] dbplyr_1.4.3
-[103] TTR_0.23-6
-[104] readxl_1.3.1
-[105] lifecycle_0.2.0
-[106] ggfittext_0.8.1
-[107] timeDate_3043.102
-[108] munsell_0.5.0
-[109] cellranger_1.1.0
-[110] hwriter_1.3.2
-[111] visNetwork_2.0.9
-[112] caTools_1.18.0
-[113] codetools_0.2-16
-[114] lmtest_0.9-37
-[115] htmlTable_1.13.3
-[116] triebeard_0.3.0
-[117] lsei_1.2-0
-[118] xtable_1.8-4
-[119] ROCR_1.0-7
-[120] diptest_0.75-7
-[121] BiocManager_1.30.10
-[122] Signac_0.2.5
-[123] scatterplot3d_0.3-41
-[124] abind_1.4-5
-[125] farver_2.0.3
-[126] FNN_1.1.3
-[127] RANN_2.6.1
-[128] askpass_1.1
-[129] biovizBase_1.34.1
-[130] sparsesvd_0.2
-[131] RcppAnnoy_0.0.16
-[132] patchwork_1.0.0.9000
-[133] tibble_3.0.1
-[134] dichromat_2.0-0
-[135] cluster_2.1.0
-[136] tidytree_0.3.3
-[137] ellipsis_0.3.0
-[138] prettyunits_1.1.1
-[139] lubridate_1.7.8
-[140] ggridges_0.5.2
-[141] igraph_1.2.5
-[142] RcppEigen_0.3.3.7.0
-[143] fgsea_1.12.0
-[144] slam_0.1-47
-[145] destiny_3.0.1
-[146] VIM_5.1.1
-[147] htmltools_0.4.0
-[148] BiocFileCache_1.10.2
-[149] plotly_4.9.2.1
-[150] XML_3.99-0.3
-[151] ModelMetrics_1.2.2.2
-[152] e1071_1.7-3
-[153] foreign_0.8-76
-[154] withr_2.2.0
-[155] fitdistrplus_1.0-14
-[156] randomcoloR_1.1.0.1
-[157] bit64_0.9-7
-[158] foreach_1.5.0
-[159] ProtGenerics_1.18.0
-[160] robustbase_0.93-6
-[161] scde_2.14.0
-[162] combinat_0.0-8
-[163] GOSemSim_2.13.1
-[164] rsvd_1.0.3
-[165] memoise_1.1.0
-[166] forcats_0.5.0
-[167] rio_0.5.16
-[168] geneplotter_1.64.0
-[169] gamlss_5.1-6
-[170] gamlss.data_5.1-4
-[171] caret_6.0-86
-[172] curl_4.3
-[173] DiagrammeR_1.0.5
-[174] fdrtool_1.2.15
-[175] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
-[176] urltools_1.7.3
-[177] xts_0.12-0
-[178] acepack_1.4.1
-[179] edgeR_3.28.1
-[180] checkmate_2.0.0
-[181] Gviz_1.30.3
-[182] npsurv_0.4-0
-[183] maxLik_1.3-8
-[184] rjson_0.2.20
-[185] openxlsx_4.1.4
-[186] ggrepel_0.8.2
-[187] distillery_1.0-7
-[188] clue_0.3-57
-[189] Lmoments_1.3-1
-[190] tools_3.6.3
-[191] sandwich_2.5-1
-[192] soGGi_1.18.0
-[193] RCurl_1.98-1.2
-[194] car_3.0-7
-[195] ggplotify_0.0.5
-[196] xml2_1.3.2
-[197] httr_1.4.1
-[198] assertthat_0.2.1
-[199] AnnotationFilter_1.10.0
-[200] boot_1.3-24
-[201] globals_0.12.5
-[202] R6_2.4.1
-[203] nnet_7.3-13
-[204] RcppHNSW_0.2.0
-[205] treeio_1.10.0
-[206] progress_1.2.2
-[207] genefilter_1.68.0
-[208] KEGGREST_1.26.1
-[209] gtools_3.8.2
-[210] shape_1.4.4
-[211] Rook_1.1-1
-[212] carData_3.0-3
-[213] colorspace_1.4-1
-[214] generics_0.0.2
-[215] base64enc_0.1-3
-[216] smoother_1.1
-[217] pillar_1.4.3
-[218] Rgraphviz_2.30.0
-[219] tweenr_1.0.1
-[220] sp_1.4-1
-[221] ggplot.multistats_1.0.0
-[222] HSMMSingleCell_1.6.0
-[223] rvcheck_0.1.8
-[224] GenomeInfoDbData_1.2.2
-[225] extRemes_2.0-11
-[226] gtable_0.3.0
-[227] bdsmatrix_1.3-4
-[228] zip_2.0.4
-[229] knitr_1.28
-[230] RcppArmadillo_0.9.860.2.0
-[231] latticeExtra_0.6-29
-[232] gamlss.dist_5.1-6
-[233] biomaRt_2.42.1
-[234] Cairo_1.5-12
-[235] pscl_1.5.5
-[236] flexmix_2.3-15
-[237] quantreg_5.55
-[238] vcd_1.4-7
-[239] BSgenome_1.54.0
-[240] openssl_1.4.1
-[241] backports_1.1.6
-[242] plotrix_3.7-8
-[243] ipred_0.9-9
-[244] enrichplot_1.6.1
-[245] brew_1.0-6
-[246] hms_0.5.3
-[247] ggforce_0.3.1
-[248] polyclip_1.10-0
-[249] numDeriv_2016.8-1.1
-[250] bbmle_1.0.23.1
-[251] lazyeval_0.2.2
-[252] Formula_1.2-3
-[253] tsne_0.1-3
-[254] crayon_1.3.4
-[255] MAST_1.12.0
-[256] pROC_1.16.2
-[257] svglite_1.2.3
-[258] viridis_0.5.1
-[259] rpart_4.1-15
-[260] compiler_3.6.3
+ [35] Hmisc_4.4-0
+ [36] ShortRead_1.44.3
+ [37] RSpectra_0.16-0
+ [38] fastmatch_1.1-0
+ [39] ranger_0.12.1
+ [40] digest_0.6.25
+ [41] png_0.1-7
+ [42] qlcMatrix_0.9.7
+ [43] sctransform_0.2.1
+ [44] ggraph_2.0.2
+ [45] pkgconfig_2.0.3
+ [46] docopt_0.6.1
+ [47] gower_0.2.1
+ [48] iterators_1.0.12
+ [49] URD_1.1.0
+ [50] reticulate_1.15
+ [51] network_1.16.0
+ [52] circlize_0.4.8
+ [53] modeltools_0.2-23
+ [54] xfun_0.13
+ [55] zoo_1.8-7
+ [56] tidyselect_1.0.0
+ [57] reshape2_1.4.4
+ [58] purrr_0.3.4
+ [59] ica_1.0-2
+ [60] viridisLite_0.3.0
+ [61] rtracklayer_1.46.0
+ [62] rlang_0.4.5
+ [63] hexbin_1.28.1
+ [64] glue_1.4.0
+ [65] ensembldb_2.10.2
+ [66] ggseqlogo_0.1
+ [67] lava_1.6.7
+ [68] europepmc_0.3
+ [69] ggsignif_0.6.0
+ [70] recipes_0.1.10
+ [71] labeling_0.3
+ [72] chipseq_1.36.0
+ [73] DEsingle_1.6.0
+ [74] gggenes_0.4.0
+ [75] class_7.3-15
+ [76] preprocessCore_1.48.0
+ [77] RMTstat_0.3
+ [78] Sierra_0.2.0
+ [79] DO.db_2.9
+ [80] annotate_1.64.0
+ [81] jsonlite_1.6.1
+ [82] systemfonts_0.2.0
+ [83] bit_1.1-15.2
+ [84] gridExtra_2.3
+ [85] gmodels_2.18.1
+ [86] stringi_1.4.6
+ [87] bitops_1.0-6
+ [88] RSQLite_2.2.0
+ [89] randomForest_4.6-14
+ [90] KEGGgraph_1.46.0
+ [91] rstudioapi_0.11
+ [92] nlme_3.1-147
+ [93] qvalue_2.18.0
+ [94] locfit_1.5-9.4
+ [95] VariantAnnotation_1.32.0
+ [96] listenv_0.8.0
+ [97] ggthemes_4.2.0
+ [98] gridGraphics_0.5-0
+ [99] dbplyr_1.4.3
+[100] TTR_0.23-6
+[101] readxl_1.3.1
+[102] lifecycle_0.2.0
+[103] ggfittext_0.8.1
+[104] timeDate_3043.102
+[105] munsell_0.5.0
+[106] cellranger_1.1.0
+[107] hwriter_1.3.2
+[108] visNetwork_2.0.9
+[109] caTools_1.18.0
+[110] codetools_0.2-16
+[111] lmtest_0.9-37
+[112] htmlTable_1.13.3
+[113] triebeard_0.3.0
+[114] lsei_1.2-0
+[115] xtable_1.8-4
+[116] ROCR_1.0-7
+[117] diptest_0.75-7
+[118] BiocManager_1.30.10
+[119] Signac_0.2.5
+[120] scatterplot3d_0.3-41
+[121] abind_1.4-5
+[122] farver_2.0.3
+[123] FNN_1.1.3
+[124] RANN_2.6.1
+[125] askpass_1.1
+[126] biovizBase_1.34.1
+[127] sparsesvd_0.2
+[128] RcppAnnoy_0.0.16
+[129] patchwork_1.0.0.9000
+[130] tibble_3.0.1
+[131] dichromat_2.0-0
+[132] cluster_2.1.0
+[133] tidytree_0.3.3
+[134] ellipsis_0.3.0
+[135] prettyunits_1.1.1
+[136] lubridate_1.7.8
+[137] ggridges_0.5.2
+[138] igraph_1.2.5
+[139] RcppEigen_0.3.3.7.0
+[140] fgsea_1.12.0
+[141] slam_0.1-47
+[142] destiny_3.0.1
+[143] VIM_5.1.1
+[144] htmltools_0.4.0
+[145] BiocFileCache_1.10.2
+[146] plotly_4.9.2.1
+[147] XML_3.99-0.3
+[148] ModelMetrics_1.2.2.2
+[149] e1071_1.7-3
+[150] foreign_0.8-76
+[151] withr_2.2.0
+[152] fitdistrplus_1.0-14
+[153] randomcoloR_1.1.0.1
+[154] bit64_0.9-7
+[155] foreach_1.5.0
+[156] ProtGenerics_1.18.0
+[157] robustbase_0.93-6
+[158] scde_2.14.0
+[159] combinat_0.0-8
+[160] GOSemSim_2.13.1
+[161] rsvd_1.0.3
+[162] memoise_1.1.0
+[163] forcats_0.5.0
+[164] rio_0.5.16
+[165] geneplotter_1.64.0
+[166] gamlss_5.1-6
+[167] gamlss.data_5.1-4
+[168] caret_6.0-86
+[169] curl_4.3
+[170] DiagrammeR_1.0.5
+[171] fdrtool_1.2.15
+[172] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+[173] urltools_1.7.3
+[174] xts_0.12-0
+[175] acepack_1.4.1
+[176] edgeR_3.28.1
+[177] checkmate_2.0.0
+[178] Gviz_1.30.3
+[179] npsurv_0.4-0
+[180] maxLik_1.3-8
+[181] rjson_0.2.20
+[182] openxlsx_4.1.4
+[183] ggrepel_0.8.2
+[184] distillery_1.0-7
+[185] Lmoments_1.3-1
+[186] tools_3.6.3
+[187] sandwich_2.5-1
+[188] soGGi_1.18.0
+[189] RCurl_1.98-1.2
+[190] car_3.0-7
+[191] ggplotify_0.0.5
+[192] xml2_1.3.2
+[193] httr_1.4.1
+[194] assertthat_0.2.1
+[195] AnnotationFilter_1.10.0
+[196] boot_1.3-24
+[197] globals_0.12.5
+[198] R6_2.4.1
+[199] nnet_7.3-13
+[200] RcppHNSW_0.2.0
+[201] treeio_1.10.0
+[202] progress_1.2.2
+[203] genefilter_1.68.0
+[204] KEGGREST_1.26.1
+[205] gtools_3.8.2
+[206] shape_1.4.4
+[207] Rook_1.1-1
+[208] carData_3.0-3
+[209] colorspace_1.4-1
+[210] generics_0.0.2
+[211] base64enc_0.1-3
+[212] smoother_1.1
+[213] pillar_1.4.3
+[214] Rgraphviz_2.30.0
+[215] tweenr_1.0.1
+[216] sp_1.4-1
+[217] ggplot.multistats_1.0.0
+[218] HSMMSingleCell_1.6.0
+[219] rvcheck_0.1.8
+[220] GenomeInfoDbData_1.2.2
+[221] extRemes_2.0-11
+[222] gtable_0.3.0
+[223] bdsmatrix_1.3-4
+[224] zip_2.0.4
+[225] knitr_1.28
+[226] RcppArmadillo_0.9.860.2.0
+[227] latticeExtra_0.6-29
+[228] gamlss.dist_5.1-6
+[229] biomaRt_2.42.1
+[230] Cairo_1.5-12
+[231] pscl_1.5.5
+[232] flexmix_2.3-15
+[233] quantreg_5.55
+[234] vcd_1.4-7
+[235] BSgenome_1.54.0
+[236] openssl_1.4.1
+[237] backports_1.1.6
+[238] plotrix_3.7-8
+[239] ipred_0.9-9
+[240] enrichplot_1.6.1
+[241] brew_1.0-6
+[242] hms_0.5.3
+[243] ggforce_0.3.1
+[244] polyclip_1.10-0
+[245] grid_3.6.3
+[246] numDeriv_2016.8-1.1
+[247] bbmle_1.0.23.1
+[248] lazyeval_0.2.2
+[249] Formula_1.2-3
+[250] tsne_0.1-3
+[251] crayon_1.3.4
+[252] MAST_1.12.0
+[253] pROC_1.16.2
+[254] svglite_1.2.3
+[255] viridis_0.5.1
+[256] rpart_4.1-15
+[257] compiler_3.6.3
 ```
 
