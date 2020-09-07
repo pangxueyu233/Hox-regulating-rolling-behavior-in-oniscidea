@@ -2,13 +2,13 @@
 
 Transcriptome evidence provides insight into Hox gene regulating rolling behavior in oniscidea
 
-![image-20200812220655996](README.assets/image-20200812220655996.png)
+![image-20200907211959608](README.assets/image-20200907211959608.png)
 
 # Citation
 
 Our paper has been published on XXXXX
 
-You could downloaded raw data from [GEO Database XXXXX](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE145190)
+You could downloaded raw data from [GEO Database GSE156323](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156323)
 
 ## Overview of submitted data
 
