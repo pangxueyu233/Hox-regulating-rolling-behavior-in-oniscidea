@@ -16,7 +16,7 @@ The majority of our data in this paper was RNA-seq data. And we submitted all th
 
 ## 1. ```code_of_prat1_analysing```
 
-This Rmarkdown file recoded processed steps in de novo whole transcripts reconstruction and homogeneity of variance quantification. And it could be found by [clicking here](code_of_prat1_analysing.md)
+This Rmarkdown files recoded processed steps in de novo whole transcripts reconstruction and homology calculation and quantification based on base sequences. And it could be found by [clicking here](code_of_prat1_analysing.md)
 
 ## 2. ```code_of_part2_analysing``` 
 
@@ -36,9 +36,11 @@ For Figure6 codes, you could find by [clicking here](Figure6_Making.md).
 
 ## 3. ```processed_files``` 
 
-All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. And GFF files of **oniscidea** were also stored in here.
+All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. And GFF files of **oniscidea** were also stored in [here]( [GFF_files](processed_files\GFF_files) ).
 
+``rolling_longest_orfs.gff3`` is the genomics annotaion information for rolling oniscidea samples.
 
+```stretching_longest_orfs.gff3```  is the genomics annotaion information for stretching oniscidea samples.
 
 
 

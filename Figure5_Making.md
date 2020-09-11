@@ -1,4 +1,4 @@
-# Figure5 mkaing and Code of analysing
+# Figure5 making and Code of analysing
 
 ## Firstly, we need to convert the Swiss ID to GO ID in each sample with annotated Trnity results.
 

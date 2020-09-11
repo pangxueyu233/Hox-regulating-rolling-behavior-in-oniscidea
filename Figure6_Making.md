@@ -1,4 +1,4 @@
-# Figure5 mkaing and Code of analysing
+# Figure5 making and Code of analysing
 
 ## Quantifying the counts of Homogenous HOX genes in samples
 

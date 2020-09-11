@@ -1,4 +1,4 @@
-# Figure1 mkaing and Code of analysing
+# Figure1 making and Code of analysing
 
 ## 1. Loading required packages
 
