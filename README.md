@@ -20,13 +20,23 @@ This Rmarkdown file recoded processed steps in de novo whole transcripts reconst
 
 ## 2. ```code_of_part2_analysing``` 
 
-This Rmarkdown file recoded ```figures making```processed steps with ***Code and Graph***. And it could be found by [clicking here](code_of_part2_analysing.md). All the processed files could be downloaded in ```processed_files``` 
+This Rmarkdown file recoded ```figures making```processed steps with ***Code and Graph***.  All the processed files could be downloaded in ```processed_files``` 
+
+For Figure1 codes, you could find by [clicking here](Figure1_Making.md).
+
+For Figure2 codes, you could find by [clicking here](Figure2_Making.md).
+
+For Figure3 codes, you could find by [clicking here](Figure3_Making.md).
+
+For Figure4 codes, you could find by [clicking here](Figure4_Making.md).
+
+For Figure5 codes, you could find by [clicking here](Figure5_Making.md).
+
+For Figure6 codes, you could find by [clicking here](Figure6_Making.md).
 
 ## 3. ```processed_files``` 
 
-All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. 
-
-
+All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. And GFF files of **oniscidea** were also stored in here.
 
 
 
