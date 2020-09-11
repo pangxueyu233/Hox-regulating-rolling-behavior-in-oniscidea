@@ -36,7 +36,7 @@ For Figure6 codes, you could find by [clicking here](Figure6_Making.md).
 
 ## 3. ```processed_files``` 
 
-All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. And GFF files of **oniscidea** were also stored in [here](processed_files\GFF_files).
+All the processed files mentioned in ```code_of_part2_analysing.md```  had been stored in this document. And GFF files of **oniscidea** were also stored in [here](processed_files/GFF_files).
 
 ``rolling_longest_orfs.gff3`` is the genomics annotaion information for rolling oniscidea samples.
 
